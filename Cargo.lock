@@ -743,7 +743,7 @@ dependencies = [
  "bitflags 2.9.0",
  "cexpr",
  "clang-sys",
- "itertools 0.10.5",
+ "itertools 0.13.0",
  "log",
  "prettyplease",
  "proc-macro2",
@@ -5686,7 +5686,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "157c5a9d7ea5c2ed2d9fb8f495b64759f7816c7eaea54ba3978f0d63000162e3"
 dependencies = [
  "anyhow",
- "itertools 0.10.5",
+ "itertools 0.13.0",
  "proc-macro2",
  "quote",
  "syn 2.0.100",
@@ -7423,6 +7423,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "swc_auto_hash_map"
+version = "0.1.0"
+dependencies = [
+ "hashbrown 0.14.5",
+ "rustc-hash 2.1.1",
+ "serde",
+ "smallvec",
+]
+
+[[package]]
 name = "swc_cached"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7994,6 +8004,7 @@ dependencies = [
  "serde_json",
  "swc_allocator",
  "swc_atoms",
+ "swc_auto_hash_map",
  "swc_common",
  "swc_config",
  "swc_ecma_ast",
