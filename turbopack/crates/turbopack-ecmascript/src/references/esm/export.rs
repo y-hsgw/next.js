@@ -551,6 +551,11 @@ impl EsmExports {
             None
         };
 
+        if scope_hoisting_context.is_some_and(|ctx| !*ctx.modules.get(&ctx.module).unwrap()) {
+            // If the current module is not exposed, no need to generate exports
+            return Ok(CodeGeneration::empty());
+        }
+
         let mut dynamic_exports = Vec::<Box<Expr>>::new();
         {
             let id = if let Some(scope_hoisting_context) = scope_hoisting_context
@@ -697,45 +702,25 @@ impl EsmExports {
             None
         };
 
-        let early_hoisted_stmts = if let Some(scope_hoisting_context) = scope_hoisting_context {
-            let exposed = *scope_hoisting_context
-                .modules
-                .get(&scope_hoisting_context.module)
-                .unwrap();
-            let registry = if exposed {
-                Some(CodeGenerationHoistedStmt::new(
-                    "__turbopack_esm__".into(),
-                    {
-                        let id = scope_hoisting_context
-                            .module
-                            .chunk_item_id(Vc::upcast(chunking_context))
-                            .await?;
-                        quote!("$turbopack_esm($getters, $id);" as Stmt,
-                            turbopack_esm: Expr = TURBOPACK_ESM.into(),
-                            getters: Expr = getters,
-                            id: Expr = module_id_to_lit(&id)
-                        )
-                    },
-                ))
+        let early_hoisted_stmts = vec![CodeGenerationHoistedStmt::new(
+            "__turbopack_esm__".into(),
+            if let Some(scope_hoisting_context) = scope_hoisting_context {
+                let id = scope_hoisting_context
+                    .module
+                    .chunk_item_id(Vc::upcast(chunking_context))
+                    .await?;
+                quote!("$turbopack_esm($getters, $id);" as Stmt,
+                    turbopack_esm: Expr = TURBOPACK_ESM.into(),
+                    getters: Expr = getters,
+                    id: Expr = module_id_to_lit(&id)
+                )
             } else {
-                None
-            };
-
-            let local_re_bindings = vec![];
-
-            registry
-                .into_iter()
-                .chain(local_re_bindings.into_iter())
-                .collect()
-        } else {
-            vec![CodeGenerationHoistedStmt::new(
-                "__turbopack_esm__".into(),
                 quote!("$turbopack_esm($getters);" as Stmt,
                     turbopack_esm: Expr = TURBOPACK_ESM.into(),
                     getters: Expr = getters
-                ),
-            )]
-        };
+                )
+            },
+        )];
 
         Ok(CodeGeneration::new(
             vec![],
