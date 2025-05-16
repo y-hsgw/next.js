@@ -246,7 +246,6 @@ export class NextServer implements NextWrapperServer {
           path.join(dir, config.distDir, SERVER_FILES_MANIFEST)
         ).config
 
-        // @ts-expect-error internal field
         config.experimental.isExperimentalCompile =
           serializedConfig.experimental.isExperimentalCompile
       } catch (_) {

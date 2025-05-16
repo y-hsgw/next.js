@@ -672,6 +672,7 @@ export default class NextNodeServer extends BaseServer<
         }
       ) => Promise<void>
     }
+    addRequestMeta(req.originalRequest, 'projectDir', this.dir)
     await module.handler(req.originalRequest, res.originalResponse, {
       waitUntil: this.getWaitUntil(),
     })

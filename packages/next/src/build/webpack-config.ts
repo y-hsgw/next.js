@@ -1932,6 +1932,7 @@ export default async function getBaseWebpackConfig(
           config,
           dev,
           distDir,
+          projectPath: dir,
           fetchCacheKeyPrefix,
           hasRewrites,
           isClient,
